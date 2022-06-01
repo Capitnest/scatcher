@@ -5,9 +5,10 @@ import re
 import urllib
 import sys
 from typing import List
-
+from twitter_scraper import get_tweets
 from functions.article import *
-from functions.tweet import *
+from functions.tweet import tweet_post
+import twint
 
 args : List[str] = sys.argv
 link = ""
@@ -42,6 +43,9 @@ def main():
         print(f'date: "{date}",')
         print(f'source: "{link}",')
         print('},')
+
+    elif(args[1] == "tweet"):
+        tweet_post(args[2])
 
     else:
         print("Incorrect Syntax! \n article | link")
