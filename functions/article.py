@@ -55,6 +55,6 @@ def article_date(soup):
 
 
         date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
-        return date.strftime("%m/%d/%Y")
+        return date.strftime("%d/%m/%Y")
     except:
         return ""
