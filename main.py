@@ -42,6 +42,7 @@ def main():
         print(f'tweet: ({post}),')
         print(f'date: "{date}",')
         print(f'source: "{link}",')
+        print(f'searchKeywords: "{name} {username} {post}"')
         print('},')
 
     elif(args[1] == "tweet"):

@@ -45,6 +45,24 @@ def article_post(soup):
 
     return html
 
+# get the text of the post, ignoring the html tags and the image
+def article_text(soup):
+
+    title = ""
+    description = ""
+
+    for tag in soup.find_all('meta'):
+
+        # get the title of the article
+        if 'property' in tag.attrs.keys() and tag.attrs['property'].strip().lower() in ['og:title', 'keywords']:
+            title = tag.attrs['content']
+
+        # get the description of the article
+        elif 'property' in tag.attrs.keys() and tag.attrs['property'].strip().lower() in ['og:description', 'keywords']:
+            description = tag.attrs['content']
+
+    return f"{title} {description}"
+
 # get the date when the article was published
 def article_date(soup):
     date = ""
