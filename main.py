@@ -1,4 +1,5 @@
 # import necessary libraries
+import twint
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -8,7 +9,9 @@ from typing import List
 from twitter_scraper import get_tweets
 from functions.article import *
 from functions.tweet import tweet_post
-import twint
+from data.tweets import usernames
+
+
 
 args : List[str] = sys.argv
 link = ""
@@ -21,9 +24,10 @@ headers.update({
 
 def main():
 
-    link = args[2]
+    
 
     if(args[1] == "article"):
+        link = args[2]
         r = requests.get(link, headers=headers)
         soup = BeautifulSoup(r.content, features="lxml")
 
@@ -46,7 +50,10 @@ def main():
         print('},')
 
     elif(args[1] == "tweet"):
-        tweet_post(args[2])
+        try:
+            tweet_post(args[2])
+        except:
+            tweet_post("")
 
     else:
         print("Incorrect Syntax! \n article | link")
