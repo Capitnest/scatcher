@@ -29,7 +29,7 @@ def tweet_post(filter_date):
         with open(f'{username}.csv', 'r') as f:
             csv_reader = csv.reader(f)
 
-            results = open(f'{username}.txt', 'a')
+            results = open(f'tweets.txt', 'a')
 
             for line in csv_reader:
                 name = line[0]
@@ -43,9 +43,9 @@ def tweet_post(filter_date):
                 date = date.strftime("%d/%m/%Y")
                 
                 if(img == ""):
-                    lines = ["\n{\nauthorName:",f'"{name}",\nauthorUsername: "{account_name}",\nauthorLink: "{link}",\ntweet: (<p>{tweet}</p>),\nsource:"{source}",\ndate: "{date}",\nsearchKeywords: "{name} {account_name} {tweet}"\n',"},"]
+                    lines = ["\n{\nauthorName:",f'"{name}",\nauthorUsername: "@{account_name}",\nauthorLink: "{link}",\ntweet: (<p>{tweet}</p>),\nsource:"{source}",\ndate: "{date}",\nsearchKeywords: "{name} {account_name} {tweet}"\n',"},"]
                 else:
-                    lines = ["\n{\nauthorName:",f'"{name}",\nauthorUsername: "{account_name}",\nauthorProfilePic: "{img}",\nauthorLink: "{link}",\ntweet: (<p>{tweet}</p>),\nsource:"{source}",\ndate: "{date}",\nsearchKeywords: "{name} {account_name} {tweet}"\n',"},"]
+                    lines = ["\n{\nauthorName:",f'"{name}",\nauthorUsername: "@{account_name}",\nauthorProfilePic: "{img}",\nauthorLink: "{link}",\ntweet: (<p>{tweet}</p>),\nsource:"{source}",\ndate: "{date}",\nsearchKeywords: "{name} {account_name} {tweet}"\n',"},"]
 
                 
                 if(date == filter_date or filter_date == ""):
