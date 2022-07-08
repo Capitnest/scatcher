@@ -13,150 +13,117 @@ from data.tweets import usernames
 from data.websites import links
 import random
 import twint
+import json
 import csv
+import time
 import datetime
 from urllib.parse import urlparse
 from data.tweets import usernames
 from data.tweets import profile_images
 
+from news import news_articles
+from twitter import tweet_post
+
 args : List[str] = sys.argv
-link = ""
 
-# simulating normal headers from a browser, so it will not to be detected as a bot by some website
-headers = requests.utils.default_headers()
-headers.update({
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
-})
-
+#the main function will scrape the internet for information, create the posts, 
+# shuffle them, and cateogirze them for its own section on the website
 def main():
 
-    if(args[1] == "article"):
+    try:
 
-        filter_date = ""
-
-        try:
-            filter_date = args[2]
-        except:
-            filter_date = ""
-
-        posts = []
-
-        #clean the results of the last scrape
-        with open("articles.txt", "w"):
-            pass
-
-        for article in links:
-
-
-            link = links[links.index(article)]
-            r = requests.get(link, headers=headers)
-            soup = BeautifulSoup(r.content, features="lxml")
-
-            name = article_site_name(soup)
-            username = article_site_name_url(link)
-            profilePic = article_site_logo_url(soup)
-            author_link = article_site_link(link)
-            post = article_post(soup)
-            date = article_date(soup)
-            text = article_text(soup)
-
-            posts.append((name, username, profilePic, author_link, post, date, link, name + username + text))
-
-            with open("articles.txt", "a") as f:
-
-                f.writelines(['{\n',f'authorName: "{name}",\n',f'authorUsername: "{username}",\n',f'authorProfilePic: "{profilePic}",\n', f'authorLink: "{author_link}",\n', f'tweet: ({post}),\n', f'date: "{date}",\n', f'source: "{link}",\n', f'searchKeywords: "{name} {username} {text}"\n', '},\n'])
-            
-
-        for users in usernames:
-
-            # Tweets
-            c = twint.Config()
-            username = users
-            print(users)
-            img = profile_images[usernames.index(users)]
-            c.Username = username
-            c.Limit = 1
-            c.Custom["tweet"] = ["name", "username", "tweet", "link", "created_at"]
-            c.Output = f"{username}.csv"
-            c.Store_csv = True
-
-            # Run
-            twint.run.Search(c)
-
-            # make the results
-            with open(f'{username}.csv', 'r') as f:
-                csv_reader = csv.reader(f)
-
-                results = open(f'tweets.txt', 'a')
-
-                for line in csv_reader:
-                    name = line[0]
-                    account_name = line[1]
-                    tweet = f"<p>{line[2]}</p>"
-                    source = line[3]
-                    date = line[4]
-                    link = "https://" + (urlparse(source).netloc) + "/" + account_name
-
-                    date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S UTC')
-                    date = date.strftime("%d/%m/%Y")
-                    
-                    if(img == ""):
-                        if(date == filter_date or filter_date == ""):
-                            posts.append((name, account_name, "", link, tweet, date, source, name + username + text))
-                        else:
-                            continue
-                    else:
-                        if(date == filter_date or filter_date == ""):
-                            posts.append((name, account_name, img, link, tweet, date, source, name + username + text))
-                        else:
-                            continue
-
+        #scrape for news for each specific coin
+        news_articles("bitcoin", "07/07/2022")
+        print('bitcoin news ✅ - 10 seconds timeout')
+        time.sleep(10)
+        news_articles("solana", args[1])
+        print('solana news ✅ - 10 seconds timeout')
+        time.sleep(10)
+        news_articles("ethereum", args[1])
+        print('ethereum news ✅ - 10 seconds timeout')
+        time.sleep(10)
+        news_articles("cardano", args[1])
         
-        random.shuffle(posts)
+        print('cardano news ✅ - 10 seconds timeout')
+        time.sleep(10)
 
-        for element in posts:
+        #general news & tweets about crypto
+        news_articles("crypto", args[1])
+        tweet_post(args[1])
+        print("crypto news & tweets ✅")
+        print("writing files...")
 
-            with open("results.txt", "a") as f:
 
-                f.writelines(['{\n',f'authorName: "{element[0]}",\n',f'authorUsername: "{element[1]}",\n',f'authorProfilePic: "{element[2]}",\n', f'authorLink: "{element[3]}",\n', f'tweet: ({element[4]}),\n', f'date: "{element[5]}",\n', f'source: "{element[6]}",\n', f'searchKeywords: "{element[7]}"\n', '},\n'])
+        # #shuffle the posts
 
+        #Bitcoin
+        bitcoin = open('results/news_bitcoin.json')
+        bitcoin_data = json.load(bitcoin)
         
+        temp = list(bitcoin_data.values())
+        random.shuffle(temp)
 
-    elif(args[1] == "tweet"):
+        with open('posts/bitcoin.json', 'w') as json_file:
+            json.dump(temp, json_file)
 
-        #clean the results of the last scrape
-        for file in usernames:
-            with open(f"{file}.csv", "w"):
-                pass
-
-        with open("tweets.txt", "w"):
-            pass
-
-        #run
-        try:
-            tweet_post(args[2])
-        except:
-            tweet_post("")
-
-    elif(args[1] == "clean"):
-        #clean the results of the last scrape
-        for file in usernames:
-            with open(f"{file}.csv", "w"):
-                pass
-
-        with open("tweets.txt", "w"):
-            pass
-
-        #clean the results of the last scrape
-        with open("articles.txt", "w"):
-            pass
+        #Ethereum
+        ethereum = open('results/news_ethereum.json')
+        ethereum_data = json.load(ethereum)
         
+        temp = list(ethereum_data.values())
+        random.shuffle(temp)
 
+        with open('posts/ethereum.json', 'w') as json_file:
+            json.dump(temp, json_file)
 
-    else:
-        print("Incorrect Syntax! \n article | link")
+        #Solana
+        solana = open('results/news_solana.json')
+        solana_data = json.load(solana)
+        
+        temp = list(solana_data.values())
+        random.shuffle(temp)
+
+        with open('posts/solana.json', 'w') as json_file:
+            json.dump(temp, json_file)
+
+        #Cardano
+        cardano = open('results/news_cardano.json')
+        cardano_data = json.load(cardano)
+        
+        temp = list(cardano_data.values())
+        random.shuffle(temp)
+
+        with open('posts/cardano.json', 'w') as json_file:
+            json.dump(temp, json_file)
+
+        # General Posts
+
+        news = open('results/news_crypto.json')
+        news_data = json.load(news)
+  
+     
+
+        tweets = open('results/tweets.json')
+        tweets_data = json.load(tweets)
+       
+       
+
+        all = {**tweets_data, **news_data}
+       
+
+        temp = list(all.values())
+        random.shuffle(temp)
+
+        with open('posts/general.json', 'w') as json_file:
+            json.dump(temp, json_file)
+
+        print("Done")
+
+    except:
+        print("Error! Please specify a date!")
+
+   
 
 
 if __name__ == '__main__':
-
     main()

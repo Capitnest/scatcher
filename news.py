@@ -1,9 +1,16 @@
-# The part of the scraper that scrapes the internet for news from different news websites
+# This part of the scraper that scrapes the internet for news from different news websites
 # We use the usearch.com api to scrape the internet for news about crypto
 
 #The code was copied from the template that can be found here 
 # https://rapidapi.com/contextualwebsearch/api/web-search/tutorials/using-python-to-call-the-search-apis
 
+import requests
+import json
+from urllib.parse import urlparse
+import sys
+from typing import List
+
+args : List[str] = sys.argv
 
 # The way we get the first 20 characters of the body to create the description 
 # is by taking the first x words and putting them in a array
@@ -22,20 +29,15 @@ def format_description(desc):
 
     return string
 
-
-import requests
-import json
-from urllib.parse import urlparse
-
 URL = "https://rapidapi.p.rapidapi.com/api/search/NewsSearchAPI"
 HEADERS = {
     "x-rapidapi-host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
     "x-rapidapi-key": "9a98b0c887mshd6519308be9ec06p17460fjsnfef70e98b03b"
 }
 
-def main(from_published_date = ""):
+def news_articles(topic, from_published_date = ""):
 
-    query = "crypto"
+    query = str(topic)
     page_number = 1
     page_size = 50
     auto_correct = True
@@ -74,7 +76,7 @@ def main(from_published_date = ""):
         source = web_page["url"]
 
         #put all the data in a dictionary
-        article = {f"{index}" : {"name": name, "username": username, "profile": profile_pic_url, "title": title, "picture": thumbnail, "description": description, "date": date, "source": source}}
+        article = {f"{index}" : {"name": name, "username": username, "profile": profile_pic_url, "user_url": author_url , "title": title, "picture": thumbnail, "description": description, "date": date, "source": source}}
         data.update(article)
 
         #move the index 
@@ -83,10 +85,16 @@ def main(from_published_date = ""):
 
 
     # write the data on the json file
-    with open('results/news.json', "w") as f:
+    with open(f'results/news_{topic}.json', "w") as f:
         json.dump(data, f)
 
 
 if __name__ == "__main__":
-    date = str(input("Enter: "))
-    main()
+
+    try:
+        try:
+            news_articles(args[1], args[2])
+        except:
+            news_articles(args[1])
+    except:
+        print("Error! Please specify a topic to search about!s")
