@@ -59,7 +59,7 @@ def news_articles(topic, from_published_date = ""):
     total_count = response["totalCount"]
 
     data = {}
-    index = 0
+    index = 55
 
     #loop through the every article
     for web_page in response["value"]:

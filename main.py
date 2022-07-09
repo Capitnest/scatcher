@@ -33,22 +33,22 @@ def main():
     try:
 
         #scrape for news for each specific coin
-        news_articles("bitcoin", "07/07/2022")
+        news_articles("bitcoin")
         print('bitcoin news ✅ - 10 seconds timeout')
         time.sleep(10)
-        news_articles("solana", args[1])
+        news_articles("solana")
         print('solana news ✅ - 10 seconds timeout')
         time.sleep(10)
-        news_articles("ethereum", args[1])
+        news_articles("ethereum")
         print('ethereum news ✅ - 10 seconds timeout')
         time.sleep(10)
-        news_articles("cardano", args[1])
+        news_articles("cardano")
         
         print('cardano news ✅ - 10 seconds timeout')
         time.sleep(10)
 
         #general news & tweets about crypto
-        news_articles("crypto", args[1])
+        news_articles("crypto")
         tweet_post(args[1])
         print("crypto news & tweets ✅")
         print("writing files...")
