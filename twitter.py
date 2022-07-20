@@ -59,11 +59,11 @@ def tweet_post(filter_date):
                 date = date.strftime("%d/%m/%Y")
                 
                 if(img == ""):
-                    lines = {f"{index}" : {"name": name, "username": account_name, "user_url": link ,"profile": "", "title": tweet, "date": date, "source": source}}
+                    lines = {f"{index}" : {"name": name, "username": f'@{account_name}', "user_url": link ,"profile": "", "title": tweet, "date": date, "source": source}}
                    
                 else:
                     
-                    lines = {f"{index}" : {"name": name, "username": account_name, "user_url": link ,"profile": "", "title": tweet, "date": date, "source": source}}
+                    lines = {f"{index}" : {"name": name, "username": f'@{account_name}', "user_url": link ,"profile": img, "title": tweet, "date": date, "source": source}}
 
                 posts.update(lines)
 
