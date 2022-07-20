@@ -23,6 +23,7 @@ from data.tweets import profile_images
 
 from news import news_articles
 from twitter import tweet_post
+import datetime
 
 args : List[str] = sys.argv
 
@@ -31,6 +32,14 @@ args : List[str] = sys.argv
 def main():
 
     try:
+
+        date = ""
+
+        if(args[1] == "today"):
+            date = time.strftime("%d/%m/%Y", time.localtime()) 
+        else:
+         
+            date = args[1]
 
         #scrape for news for each specific coin
         news_articles("bitcoin")
@@ -49,7 +58,7 @@ def main():
 
         #general news & tweets about crypto
         news_articles("crypto")
-        tweet_post(args[1])
+        tweet_post(date)
         print("crypto news & tweets ✅")
         print("writing files...")
 
@@ -100,16 +109,16 @@ def main():
 
         news = open('results/news_crypto.json')
         news_data = json.load(news)
-  
-     
+
+        
 
         tweets = open('results/tweets.json')
         tweets_data = json.load(tweets)
-       
-       
+        
+        
 
         all = {**tweets_data, **news_data}
-       
+        
 
         temp = list(all.values())
         random.shuffle(temp)
@@ -120,9 +129,10 @@ def main():
         print("Done")
 
     except:
+
         print("Error! Please specify a date!")
 
-   
+
 
 
 if __name__ == '__main__':
