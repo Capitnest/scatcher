@@ -33,6 +33,7 @@ def tweet_post(filter_date):
         username = users
         print(users)
         img = profile_images[usernames.index(users)]
+        print(img)
         c.Username = username
         c.Limit = 1
         c.Custom["tweet"] = ["name", "username", "tweet", "link", "created_at"]
@@ -64,15 +65,20 @@ def tweet_post(filter_date):
                     
                     lines = {f"{index}" : {"name": name, "username": account_name, "user_url": link ,"profile": "", "title": tweet, "date": date, "source": source}}
 
-                
+                posts.update(lines)
 
-                if(date == filter_date or filter_date == ""):
+                print("=====`")
+                print(date)
+                print(filter_date)
+                if(date == filter_date):
+
                     posts.update(lines)
-
-                    #move the index
-                    index += 1
                 else:
                     continue
+
+                index += 1
+
+    print(posts)
     
     with open(f'results/tweets.json', "w") as f:
         json.dump(posts, f)

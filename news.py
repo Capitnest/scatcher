@@ -9,6 +9,7 @@ import json
 from urllib.parse import urlparse
 import sys
 from typing import List
+import datetime
 
 args : List[str] = sys.argv
 
@@ -67,7 +68,7 @@ def news_articles(topic, from_published_date = ""):
         #the data that we need from the article
         name = web_page["provider"]["name"]
         username = urlparse(web_page["url"]).netloc
-        profile_pic_url = web_page["provider"]["favIcon"]
+        profile_pic_url = f"https://{urlparse(web_page['url']).netloc}/favicon.ico"
         author_url = f"https://{urlparse(web_page['url']).netloc}/"
         title = web_page["title"]
         thumbnail = web_page["image"]["thumbnail"]
@@ -75,14 +76,18 @@ def news_articles(topic, from_published_date = ""):
         date = web_page["datePublished"]
         source = web_page["url"]
 
+        try:
+            date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+            date = date.strftime("%d/%m/%Y")
+        except:
+            continue
+
         #put all the data in a dictionary
         article = {f"{index}" : {"name": name, "username": username, "profile": profile_pic_url, "user_url": author_url , "title": title, "picture": thumbnail, "description": description, "date": date, "source": source}}
         data.update(article)
 
         #move the index 
         index += 1
-        
-
 
     # write the data on the json file
     with open(f'results/news_{topic}.json', "w") as f:
