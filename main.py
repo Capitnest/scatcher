@@ -1,15 +1,12 @@
 # import necessary libraries
-from bs4 import BeautifulSoup
-import requests
+
 import re
 import urllib
 import sys
 from typing import List
-from functions.article import *
-from functions.tweet import tweet_post
+
 import random
 import json
-import csv
 import time
 import datetime
 from urllib.parse import urlparse
@@ -20,8 +17,6 @@ import datetime
 
 args : List[str] = sys.argv
 
-
-
 def news(topic, date=None):
     
     if(date == None):
@@ -29,7 +24,7 @@ def news(topic, date=None):
     else:
         news_articles(topic, date)
 
-    #Bitcoin
+    
     if(date == None):
         results = open(f'results/news_{topic}.json')
         results_data = json.load(results)
@@ -52,25 +47,43 @@ def news(topic, date=None):
 
   
 
-    print(f'{topic} news ✅ - 10 seconds timeout')
+    if(date == None):
 
+        print(f'{topic} news✅ - 5 seconds timeout')
+
+    else:
+        print(f'{topic} news with date {date}✅ - 5 seconds timeout')
+
+    time.sleep(5)
     
 
+# get all the news from multiple time steps
+def getNews(topic):
 
-#the main function will scrape the internet for information, create the posts, 
-# shuffle them, and cateogirze them for its own section on the website
+    news(topic)
+    news(topic, 1)
+    news(topic, 7)
+    news(topic, 32)
+    news(topic, 90)
+    news(topic, 180)
+    news(topic, 360)
+    
+
 def main():
 
     try:
 
- 
-        news("crypto", 1)
+
+        getNews("bitcoin")
+        getNews("crypto")
+        getNews("ethereum")
+        getNews("solana")
+        getNews("cardano")
+        
 
     except:
 
         print("Error! Some error occured.")
-
-
 
 
 if __name__ == '__main__':

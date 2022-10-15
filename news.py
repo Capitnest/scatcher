@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 import sys
 from typing import List
 import datetime
+from datetime import timedelta
 
 args : List[str] = sys.argv
 
@@ -36,7 +37,16 @@ HEADERS = {
     "x-rapidapi-key": "9a98b0c887mshd6519308be9ec06p17460fjsnfef70e98b03b"
 }
 
-def news_articles(topic, from_published_date = ""):
+def news_articles(topic, dateDays=None):
+
+    y = "" 
+
+    if(dateDays != None):
+        x = datetime.datetime.now() - timedelta(days=dateDays)
+        y = x.isoformat()
+
+    else:
+        y = "" 
 
     query = str(topic)
     page_number = 1
@@ -52,7 +62,7 @@ def news_articles(topic, from_published_date = ""):
                 "autoCorrect": auto_correct,
                 "safeSearch": safe_search,
                 "withThumbnails": with_thumbnails,
-                "fromPublishedDate": from_published_date,
+                "fromPublishedDate": y,
                 "toPublishedDate": to_published_date}
 
     response = requests.get(URL, headers=HEADERS, params=querystring).json()
@@ -89,9 +99,15 @@ def news_articles(topic, from_published_date = ""):
         #move the index 
         index += 1
 
-    # write the data on the json file
-    with open(f'results/news_{topic}.json', "w") as f:
-        json.dump(data, f)
+
+    if(dateDays == None):
+        # write the data on the json file
+        with open(f'results/news_{topic}.json', "w") as f:
+            json.dump(data, f)
+    else:
+        # write the data on the json file
+        with open(f'results/news_{topic}_{dateDays}.json', "w") as f:
+            json.dump(data, f)
 
 
 if __name__ == "__main__":
