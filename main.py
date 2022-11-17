@@ -10,12 +10,23 @@ import json
 import time
 import datetime
 from urllib.parse import urlparse
+from functions.lunarcrush import nft_of_the_day, nft_of_the_day_info, coin_of_the_day, coin_of_the_day_info, stock_of_the_day, stock_of_the_day_info
 
 from news import news_articles
-from twitter import tweet_post
 import datetime
 
 args : List[str] = sys.argv
+
+def info_to_file(info, file):
+
+    data = info()
+
+    with open(file, 'w') as f:
+        json.dump(data, f)
+
+    print(f'✓ Lunarcrush - {info} to {file} (time sleep 5)')
+    time.sleep(5)
+    
 
 def news(topic, date=None):
     
@@ -71,19 +82,23 @@ def getNews(topic):
 
 def main():
 
-    try:
 
 
-        getNews("bitcoin")
-        getNews("crypto")
-        getNews("ethereum")
-        getNews("solana")
-        getNews("cardano")
-        
+    # getNews("bitcoin")
+    # getNews("crypto")
+    # getNews("ethereum")
+    # getNews("solana")
+    # getNews("cardano")
 
-    except:
+    info_to_file(nft_of_the_day, "data/nft_of_the_day.json")
+    info_to_file(nft_of_the_day_info, "data/nft_of_the_day_info.json")
+    info_to_file(coin_of_the_day, "data/coin_of_the_day.json")
+    info_to_file(coin_of_the_day_info, "data/coin_of_the_day_info.json")
+    info_to_file(stock_of_the_day, "data/stock_of_the_day.json")
+    info_to_file(stock_of_the_day_info, "data/stock_of_the_day_info.json")
+   
+    
 
-        print("Error! Some error occured.")
 
 
 if __name__ == '__main__':
